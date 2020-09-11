@@ -3,17 +3,8 @@ module.exports = (sequelize, Sequelize) => {
       title: {
         type: Sequelize.STRING
       },
-      choice1: {
-        type: Sequelize.STRING
-      },
-      choice2: {
-        type: Sequelize.STRING
-      },
-      choice3: {
-        type: Sequelize.STRING
-      },
-      choice4: {
-        type: Sequelize.STRING
+      choices:{
+        type: Sequelize.ARRAY(Sequelize.STRING)
       },
       answer: {
         type: Sequelize.STRING
@@ -24,9 +15,6 @@ module.exports = (sequelize, Sequelize) => {
       selected: {
         type: Sequelize.STRING
       },
-      published: {
-        type: Sequelize.BOOLEAN
-      }
     });
   
     return Exam_bank;

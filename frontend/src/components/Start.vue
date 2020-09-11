@@ -6,27 +6,28 @@
         <ul class="list-group">
           <li class="list-group-item" :class="{ active: index == currentIndex }"
           v-for="(exambank, index) in exambanks"
-          @click="setActiveQuestion(exambank, index)"
-          :key="exambank">
+          v-bind:key="exambank.key">
 
             <div class="number_question"
-            >Câu {{index = index + 1}}</div>
+            >Câu {{index + 1}}</div>
           
             <div class="question_content">{{ exambank.title }}</div>
 
-            <div  @click="[exambank.selected = exambank.choice1]"><span class="label">A.</span> {{exambank.choice1}}</div>
+            <div :class="exambank.selected === exambank.choices[0] ? 'active': ''" 
+            @click="[exambank.selected = exambank.choices[0]]"><span class="label">A.</span> {{exambank.choices[0]}}</div>
 
-            <div  @click="[exambank.selected = exambank.choice2]"><span class="label">B.</span> {{exambank.choice2}}</div>
+            <div :class="exambank.selected === exambank.choices[1] ? 'active': ''"  
+            @click="[exambank.selected = exambank.choices[1]]"><span class="label">B.</span> {{exambank.choices[1]}}</div>
 
-            <div  @click="[exambank.selected = exambank.choice3]"><span class="label">C.</span> {{exambank.choice3}}</div>
+            <div :class="exambank.selected === exambank.choices[2] ? 'active': ''"  
+            @click="[exambank.selected = exambank.choices[2]]"><span class="label">C.</span> {{exambank.choices[2]}}</div>
 
-            <div  @click="[exambank.selected = exambank.choice4]"><span class="label">D.</span> {{exambank.choice4}}</div>
+            <div :class="exambank.selected === exambank.choices[3] ? 'active': ''"  
+            @click="[exambank.selected = exambank.choices[3]]"><span class="label">D.</span> {{exambank.choices[3]}}</div>
 
             </li>
         
-      </ul>
-      
-      
+        </ul>
       </div>
      </div>
     <div class="right">
@@ -34,8 +35,11 @@
                         <div class="timechoice">Chọn thời gian</div>
                         <div class="choice" style="display: flex;">
                         <div class="time1" v-if="on1"><button @click="countDownTimer1" >60 phút</button></div>
+                        <div v-else></div>
                         <div class="time2" v-if="on2"><button @click="countDownTimer2" >45 phút</button></div>
+                        <div v-else></div>
                         <div class="time3" v-if="on3"><button @click="countDownTimer3" >30 phút</button></div>
+                        <div v-else></div>
                         </div>
                         <div class="timepost">Thời gian còn lại</div>
                         <div class="clock" >
@@ -63,9 +67,12 @@
                             <div class="answeritem" id="010" @click="scroll10" >10</div>
                             
                         </div>
-                        <button class="m-3 btn btn-sm btn-danger" @click="submit" style="width: 75%">Submit</button>
+
+                        <button class="m-3 btn btn-sm btn-danger" @click="submit();saveResult();"  style="width: 75%">Submit</button>
+
                         <div v-if="turn_on" class="result-wrap" >You scored {{marks()}} Points</div>
                         <div v-else></div>
+                        
                          
                 </div>
       </div> 
@@ -75,10 +82,17 @@
 </template>
 <script>
 import ExamBankDataService from "../services/ExamBankDataService";
+import ResultDataService from "../services/ResultDataService";
+
 export default {
   
   data() {
     return {
+      result: {
+        marks: "",
+        username:""
+      },
+      // submitted: false,
       exambanks: [],
       currentQuestion: null,
       currentIndex: -1,
@@ -97,6 +111,27 @@ export default {
     };
   },
   methods: {
+    activeout(){
+      if((this.exambanks[0].selected == this.exambanks[0].choices[0]) || (this.exambanks[0].selected == this.exambanks[0].choices[1])){
+        var el = this.$el.getElementsByClassName("answeritem")[0];
+      el.style.color = "blue";
+      }
+    },
+    saveResult() {
+      var data = {
+        marks: this.result.marks,
+        username: this.result.username
+      };
+      ResultDataService.create(data)
+        .then(response => {
+          this.result.id = response.data.id;
+          console.log(response.data);
+          // this.submitted = true;
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
     retrieveQuestion() {
       ExamBankDataService.getAll()
         .then(response => {
@@ -113,12 +148,16 @@ export default {
     // },
      marks() {
       var correct = this.exambanks.filter(exambank => exambank.selected === exambank.answer);
+      this.result.marks = correct.length * 10;
+      this.result.username = this.currentUser.username;
       return correct.length * 10;
     },
     submit(){
       this.turn_on = true ;
     },
-    countDownTimer1() {
+    countDownTimer1() {  
+                this.on2 = false;
+                this.on3 = false;
                 if(this.countDown1 > 0) {
                     setTimeout(() => {
                         this.countDown1 -= 1
@@ -132,6 +171,8 @@ export default {
                 }
     },
     countDownTimer2() {
+                this.on1 = false;
+                this.on3 = false;
                 if(this.countDown2 > 0) {
                     setTimeout(() => {
                         this.countDown2 -= 1
@@ -140,11 +181,13 @@ export default {
                         if(this.seconds < 10){
                           this.seconds = "0"+this.seconds
                         }
-                        this.countDownTimer1()
+                        this.countDownTimer2()
                     }, 1000)
                 }
     },
     countDownTimer3() {
+                this.on2 = false;
+                this.on1 = false;
                 if(this.countDown3 > 0) {
                     setTimeout(() => {
                         this.countDown3 -= 1
@@ -156,15 +199,6 @@ export default {
                         this.countDownTimer3()
                     }, 1000)
                 }
-    },
-    turnoff1(){
-      this.on1 = false ;
-    },
-    turnoff2(){
-      this.on2 = false ;
-    },
-    turnoff3(){
-      this.on3 = false ;
     },
     plus(){
       this.number = this.number + 1
@@ -209,6 +243,11 @@ export default {
     scroll10(){
       var el = this.$el.getElementsByClassName("number_question")[9];
       el.scrollIntoView();
+    },
+  },
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
     },
   },
   created() {
@@ -334,6 +373,8 @@ export default {
 }
 .choice{
     margin: 20px 20px 10px;
+    align-items: center;
+    justify-content: center;
 }
 .choice div{
     padding-right: 10px;

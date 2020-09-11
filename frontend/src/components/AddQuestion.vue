@@ -65,23 +65,9 @@
           required
           v-model="exambank.answer"
           name="answer"
-          value="fdfsdfsd"
         />
         
       </div>
-
-      <!-- <div class="form-group">
-        <label for="answer">Answer</label>
-        <span
-          class="form-control"
-          id="answer"
-          required
-          v-bind="exambank.answer"
-          name="answer" >
-        fdfdfdfd</span>
-      </div> -->
-
-     
 
       <button @click="saveQuestion" class="btn btn-success">Submit</button>
     </div>
@@ -102,26 +88,24 @@ export default {
       exambank: {
         id: null,
         title: "",
+        choice: "",
         choice1: "",
         choice2: "",
         choice3: "",
         choice4: "",
-        answer: "",
+        answer: ""
         
       },
       submitted: false,
-      x : 5
+      
     };
   },
   methods: {
     saveQuestion() {
       var data = {
         title: this.exambank.title,
-        choice1: this.exambank.choice1,
-        choice2: this.exambank.choice2,
-        choice3: this.exambank.choice3,
-        choice4: this.exambank.choice4,
-        answer: this.exambank.answer
+        choices: [ this.exambank.choice1, this.exambank.choice2, this.exambank.choice3, this.exambank.choice4 ],
+        answer: this.exambank.answer,
       };
       ExamBankDataService.create(data)
         .then(response => {
@@ -138,9 +122,7 @@ export default {
       this.submitted = false;
       this.exambank = {};
     },
-    back(){
-
-    }
+    
   }
 };
 </script>

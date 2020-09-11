@@ -23,16 +23,7 @@
           <label><strong>Title:</strong></label> {{ currentQuestion.title }}
         </div>
         <div>
-          <label><strong>Choice1</strong></label> {{ currentQuestion.choice1 }}
-        </div>
-         <div>
-          <label><strong>Choice2</strong></label> {{ currentQuestion.choice2 }}
-        </div>
-         <div>
-          <label><strong>Choice3</strong></label> {{ currentQuestion.choice3 }}
-        </div>
-         <div>
-          <label><strong>Choice4</strong></label> {{ currentQuestion.choice4 }}
+          <label><strong>Choices</strong></label> {{ currentQuestion.choices }}
         </div>
          <div>
           <label><strong>Answer</strong></label> {{ currentQuestion.answer }}
@@ -56,7 +47,7 @@
 <script>
 import ExamBankDataService from "../services/ExamBankDataService";
 export default {
-  
+  name:"exambanks",
   data() {
     return {
       exambanks: [],

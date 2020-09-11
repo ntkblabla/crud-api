@@ -21,7 +21,7 @@ module.exports = app => {
     // Delete a Tutorial with id
     router.delete("/:id", exambanks.deleteQuestion);
   
-    // Create a new Tutorial
+    // Delete all
     router.delete("/", exambanks.deleteAllQuestion);
   
     app.use('/api/exambanks', router);

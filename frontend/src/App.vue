@@ -20,6 +20,10 @@
         <li class="nav-item">
           <a href="/start" class="nav-link">Start</a>
         </li>
+        <li class="nav-item">
+          <a href="/result" class="nav-link">Result</a>
+        </li>
+        
       </div>
 
       <div v-if="!currentUser" class="navbar-nav ml-auto">
@@ -71,13 +75,6 @@ export default {
 
       return false;
     },
-    showModeratorBoard() {
-      if (this.currentUser && this.currentUser.roles) {
-        return this.currentUser.roles.includes('ROLE_MODERATOR');
-      }
-
-      return false;
-    }
   },
   methods: {
     logOut() {

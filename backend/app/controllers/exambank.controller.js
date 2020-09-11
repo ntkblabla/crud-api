@@ -11,18 +11,13 @@ exports.createQuestion = (req, res) => {
       });
       return;
     }
-  
-    // Create a Question
+   // Create a Question
     const exambank = {
       title: req.body.title,
       answer: req.body.answer,
       selected: req.body.selected,
-      choice1: req.body.choice1,
-      choice2: req.body.choice2,
-      choice3: req.body.choice3,
-      choice4: req.body.choice4,
+      choices: req.body.choices,
       marks: req.body.marks,
-      published: req.body.published ? req.body.published : false
     };
   
     // Save Question in the database
@@ -32,8 +27,7 @@ exports.createQuestion = (req, res) => {
       })
       .catch(err => {
         res.status(500).send({
-          message:
-            err.message || "Some error occurred while creating the Question."
+          message:err.message 
         });
       });
   };

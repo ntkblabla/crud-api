@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from './components/Home.vue';
+import Home from './view/Home.vue';
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
 
@@ -30,13 +30,13 @@ export default new Router({
       path: '/profile',
       name: 'profile',
       // lazy-loaded
-      component: () => import('./components/Profile.vue')
+      component: () => import('./view/Profile.vue')
     },
     {
       path: "/exambanks",
       
       name: "exambanks",
-      component: () => import("./components/Exam")
+      component: () => import("./view/Exam")
     },
     {
       path: "/addquestion",
@@ -53,7 +53,7 @@ export default new Router({
       path: "/users",
       alias: "/users",
       name: "users",
-      component: () => import("./components/UserList")
+      component: () => import("./view/UserList")
     },
     {
       path: "/users/:id",
@@ -65,6 +65,13 @@ export default new Router({
       
       name: "start",
       component: () => import("./components/Start")
-    }
+    },
+    {
+      path: "/result",
+      
+      name: "result",
+      component: () => import("./view/Result")
+    },
+
   ]
 });
